@@ -1,5 +1,6 @@
 import React from 'react';
 import ReadOnlyInput from './components/ReadOnlyInput';
+import { calculateSalaryFrom } from './helpers/salary';
 
 
 
@@ -27,15 +28,23 @@ export default class App extends React.Component {
     this.setState({ grossSalary: newNumber })
   };
 
+  componentDidUpdate(_, previousState) {
+    if (this.state.grossSalary !== previousState.grossSalary) {
+      const calculations = calculateSalaryFrom(this.state.grossSalary);
+      this.setState({ calculations });
+    }
+  }
+
   render() {
-    const { grossSalary, calculations } = this.setState;
-    const
+    const { calculations } = this.state;
+    const { baseINSS, discountINSS, baseIRPF, discountIRPF, netSalary } = calculations;
+
     return (
       <div className='container'>
         <h1>React Calculator</h1>
         <label>
           <span>Salário bruto</span>
-          <input type='number' value={grossSalary} onChange={this.handleInputChange} step='any' min='1' max='9999999999' placeholder='ex:1.045,00' />
+          <input type='number' onChange={this.handleInputChange} placeholder='ex:1.045,00' />
         </label>
         <ReadOnlyInput label='Base INSS:' value={baseINSS} />
         <ReadOnlyInput label='Desconto INSS:' value={discountINSS} />
