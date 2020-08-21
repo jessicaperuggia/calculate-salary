@@ -1,26 +1,26 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class InputFullSalary extends Component {
-    handleInputChange = (event) => {
+export default function InputFullSalary(props) {
+    const handleInputChange = (event) => {
         const newValue = +event.target.value;
-        this.props.onSalaryChange(newValue);
+        props.onSalaryChange(newValue);
     }
-    render() {
-        const { currentValue } = this.props;
-        return (
-            <div className='input-field col s12'>
-                <input
-                    autoFocus
-                    id='inputFullSalary'
-                    type='number'
-                    value={currentValue}
-                    onChange={this.handleInputChange}
-                    min='1000'
-                    step='100'
-                />
-                <label className='active' htmlFor='inputFullSalary' >Salário bruto:</label>
-            </div>
-        );
-    }
+
+    const { currentValue } = props;
+    return (
+        <div className='input-field col s12'>
+            <input
+                autoFocus
+                id='inputFullSalary'
+                type='number'
+                value={currentValue}
+                onChange={handleInputChange}
+                min='1000'
+                step='100'
+            />
+            <label className='active' htmlFor='inputFullSalary' >Salário bruto:</label>
+        </div>
+    );
+
 }
 
