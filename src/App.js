@@ -1,57 +1,49 @@
 import React from 'react';
 import ReadOnlyInput from './components/ReadOnlyInput';
 import { calculateSalaryFrom } from './helpers/salary';
+import ProgressBarSalary from './components/ProgressBarSalary';
+import InputFullSalary from './components/InputFullSalary';
 
-
+const COLOR_INSS = 'orange';
+const COLOR_IRPF = 'red';
+const COLOR_NET_SALARY = 'green';
 
 export default class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
-      grossSalary: null,
-      calculations: {
-        baseINSS: 0,
-        discountINSS: 0,
-        percentageINSS: 0,
-        baseIRPF: 0,
-        discountIRPF: 0,
-        percentageIRPF: 0,
-        netSalary: 0,
-      },
+      fullSalary: 1000,
     };
   }
 
-  handleInputChange = (event) => {
-    const newNumber = Number(event.target.value);
-
-    this.setState({ grossSalary: newNumber })
+  handelFullSalaryChange = (newValue) => {
+    this.setState({ fullSalary: newValue });
   };
 
-  componentDidUpdate(_, previousState) {
-    if (this.state.grossSalary !== previousState.grossSalary) {
-      const calculations = calculateSalaryFrom(this.state.grossSalary);
-      this.setState({ calculations });
-    }
-  }
+
 
   render() {
-    const { calculations } = this.state;
-    const { baseINSS, discountINSS, baseIRPF, discountIRPF, netSalary } = calculations;
+    const { fullSalary } = this.state;
 
+    const salaryCalculations = calculateSalaryFrom(fullSalary);
+    const { baseINSS, discountINSS, percentageINSS, baseIRPF, discountIRPF, percentageIRPF, netSalary, percentageNetSalary } = salaryCalculations;
     return (
       <div className='container'>
-        <h1>React Calculator</h1>
-        <label>
-          <span>Salário bruto</span>
-          <input type='number' onChange={this.handleInputChange} placeholder='ex:1.045,00' />
-        </label>
-        <ReadOnlyInput label='Base INSS:' value={baseINSS} />
-        <ReadOnlyInput label='Desconto INSS:' value={discountINSS} />
-        <ReadOnlyInput label='Base IRPF:' value={baseIRPF} />
-        <ReadOnlyInput label='Desconto IRPF:' value={discountIRPF} />
-        <ReadOnlyInput label='Salário líquido:' value={netSalary} />
-      </div >
+        <h1 style={{ textAlign: 'center' }}>React Salário</h1>
+
+        <div className='row'>
+          <InputFullSalary currentValue={fullSalary} onSalaryChange={this.handelFullSalaryChange} />
+        </div>
+        <div className='row'>
+          <ReadOnlyInput label='Base INSS:' value={baseINSS} />
+          <ReadOnlyInput label='Desconto INSS:' value={discountINSS} percentage={percentageINSS} color={COLOR_INSS} />
+          <ReadOnlyInput label='Base IRPF:' value={baseIRPF} />
+          <ReadOnlyInput label='Desconto IRPF:' value={discountIRPF} percentage={percentageIRPF} color={COLOR_IRPF} />
+          <ReadOnlyInput label='Salário líquido:' value={netSalary} percentage={percentageNetSalary} color={COLOR_NET_SALARY} />
+        </div>
+        <ProgressBarSalary inss={percentageINSS} irpf={percentageIRPF} netSalary={percentageNetSalary} />
+      </div>
     );
   }
 }

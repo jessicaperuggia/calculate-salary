@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import css from '../components/read-only-input.module.css';
+import { formatPercentage, formatMoney } from '../helpers/formatters';
+
 
 export default class ReadOnlyInput extends Component {
     render() {
-        const { label, value } = this.props;
+        const { label, value, percentage, color = 'black' } = this.props;
+        const id = 'input' + label;
+        const formattedPercentage = percentage > 0 ? `(${formatPercentage(percentage)})` : '';
+        const formattedValue = `${formatMoney(value)} ${formattedPercentage}`;
+
         return (
-            <div className={css.divContainer}>
-                <label>
-                    <span>{label}</span>
-                    <input type='text' readOnly disabled value={value} />
+            <div className='input-field col s12 m6 l3'>
+                <input type='text' id={id} readOnly value={formattedValue} style={{ color, fontWeight: 'bold' }} />
+                <label className='active' htmlFor={id} >
+                    {label}
                 </label>
             </div>
-
         );
     }
 }
